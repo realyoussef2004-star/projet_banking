@@ -1,9 +1,0 @@
-{
-  "train_initial": 10003,
-  "train_nettoye": 9992,
-  "train": 7993,
-  "validation": 1999,
-  "test": 3080,
-  "categories": 77,
-  "random_state": 42
-}
