@@ -1,0 +1,3 @@
+modele,accuracy,macro_f1
+TF-IDF + régression logistique,0.8479239619809905,0.8408053270321741
+DistilBERT fine-tuné,0.9154577288644322,0.9160931697955035
