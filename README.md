@@ -2,7 +2,7 @@
 
 Projet organisé en trois notebooks pour comparer TF-IDF + régression logistique et DistilBERT fine-tuné sur 77 catégories d’intentions bancaires.
 
-Sur le même jeu de validation, DistilBERT atteint **91,55 % d’accuracy** et **91,61 % de macro-F1**, contre **84,79 %** et **84,08 %** pour la baseline TF-IDF.
+Sur le jeu de test, DistilBERT atteint **91,75 % d’accuracy** et **91,78 % de macro-F1**, contre **84,12 %** et **83,89 %** pour la baseline TF-IDF. Les résultats de validation et de test sont détaillés ci-dessous.
 
 ## Installation et lancement
 
@@ -23,7 +23,7 @@ Exécuter de haut en bas, dans cet ordre :
 
 Les échanges entre notebooks passent par les fichiers sauvegardés. Les étapes de préparation, de baseline et de fine-tuning peuvent ainsi être lancées dans des noyaux distincts, dans cet ordre. Si les données ou le découpage changent, relancer les trois notebooks pour éviter de comparer des résultats périmés.
 
-**État du test final :** la dernière cellule du notebook 03 doit être corrigée avant utilisation : `est_df` au lieu de `test_df`, caractère `=` superflu devant `baseline_test_predictions`, et absence de condition `if RUN_FINAL_TEST:`. Le drapeau est actuellement défini à `True`, mais ne contrôle pas l’exécution. Aucun résultat de test final n’est enregistré dans les notebooks fournis.
+**Reproduction du test final :** les résultats ont été fournis dans une capture distincte. La dernière cellule de la copie jointe du notebook 03 contient encore des erreurs à corriger avant réexécution : `est_df` au lieu de `test_df`, caractère `=` superflu devant `baseline_test_predictions`, et absence de condition `if RUN_FINAL_TEST:`. Le drapeau y est défini à `True`, mais ne contrôle pas l’exécution.
 
 ## Données et protocole expérimental
 
@@ -54,7 +54,20 @@ L’**accuracy** mesure la proportion de prédictions correctes. Le **macro-F1**
 
 DistilBERT améliore l’accuracy de **6,76 points de pourcentage** et le macro-F1 de **7,53 points** par rapport à la baseline. Il obtient donc les meilleurs scores sur cette validation. Cette comparaison ne constitue pas une évaluation finale indépendante : la validation sert également à sélectionner le meilleur checkpoint de DistilBERT.
 
-### Configuration et temps d’entraînement
+## Résultats sur le test
+
+Les scores ci-dessous proviennent de la capture des résultats de test fournie après les notebooks. Le jeu de test compte **3 080 messages** d’après le notebook de préparation.
+
+| Modèle | Accuracy | Macro-F1 |
+| --- | ---: | ---: |
+| TF-IDF + régression logistique | 84,12 % | 83,89 % |
+| DistilBERT fine-tuné | **91,75 %** | **91,78 %** |
+
+Sur le test, DistilBERT améliore l’accuracy de **7,63 points de pourcentage** et le macro-F1 de **7,89 points** par rapport à la baseline. Il conserve ainsi son avantage sur les deux métriques. Ses scores de test sont proches de ceux de validation.
+
+Le test doit être réservé à l’évaluation finale, une fois les réglages fixés. Ses résultats ne doivent pas servir à ajuster les hyperparamètres ou à sélectionner un checkpoint.
+
+## Configuration et temps d’entraînement
 
 | Élément | TF-IDF + régression logistique | DistilBERT fine-tuné |
 | --- | --- | --- |
@@ -66,7 +79,7 @@ DistilBERT améliore l’accuracy de **6,76 points de pourcentage** et le macro-
 
 Le GPU détecté lors de l’exécution de DistilBERT est une **NVIDIA GeForce RTX 4060 Laptop GPU**, avec CUDA disponible. Ces durées dépendent du matériel et de l’environnement ; elles ne constituent pas une mesure comparative à matériel identique.
 
-### Analyse des erreurs
+## Analyse des erreurs
 
 La baseline commet **304 erreurs sur 1 999 messages** de validation. Les exemples d’erreurs de DistilBERT montrent notamment des confusions entre intentions proches : paiement par carte et retrait refusés, frais de rechargement par carte et par virement, ou taux de change général et taux appliqué aux retraits.
 
@@ -85,7 +98,7 @@ La comparaison sur la validation est enregistrée dans :
 - `results/baseline_metrics.json` et `results/distilbert_metrics.json` : métriques et durées.
 - `results/baseline_validation_predictions.csv` et `results/distilbert_validation_predictions.csv` : prédictions détaillées.
 
-Après correction et exécution de la cellule de test final, la comparaison sur le test sera enregistrée dans `results/comparison_test.csv`.
+La cellule de test final prévoit d’enregistrer la comparaison dans `results/comparison_test.csv`. Ce fichier n’a pas été joint ; les scores de test présentés ici sont repris de la capture fournie.
 
 ## Ce qui est conservé et ajouté
 
@@ -95,10 +108,10 @@ Ajouts : explications en français, contrôles d’entrée, graphiques d’explo
 
 ## Ressources et validation
 
-Les notebooks fournis contiennent les sorties d’une exécution de la préparation, de la baseline et du fine-tuning de DistilBERT avec les effectifs et scores présentés ci-dessus. Ces résultats remplacent la mention initiale selon laquelle seul un contrôle sur données synthétiques avait été réalisé. Ils n’ont pas été recalculés lors de la mise à jour de ce README.
+Les notebooks fournis contiennent les sorties d’une exécution de la préparation, de la baseline et du fine-tuning de DistilBERT avec les effectifs et scores de validation présentés ci-dessus. Les scores de test proviennent de la capture complémentaire fournie. Ces résultats remplacent la mention initiale selon laquelle seul un contrôle sur données synthétiques avait été réalisé. Ils n’ont pas été recalculés lors de la mise à jour de ce README.
 
 Le premier téléchargement de DistilBERT nécessite Internet. Un GPU est conseillé pour les 10 époques ; le code peut aussi utiliser le CPU. La variante `uncased` choisie dans le notebook initial est conservée.
 
 Les dépendances ne constituent pas un environnement verrouillé : la compatibilité de l’environnement complet reste à vérifier lors de l’installation. Le README initial indique que Transformers est borné à la série 4 ; le fichier `requirements.txt` n’étant pas joint aux éléments examinés, cette contrainte et sa compatibilité avec les interfaces utilisées restent à vérifier.
 
-L’évaluation finale sur les 3 080 messages de test reste à effectuer après correction de la cellule concernée et fixation des réglages. Les scores de validation ne doivent pas être présentés comme des scores de test.
+Les résultats de validation et de test sont présentés séparément. Pour reproduire l’évaluation de test depuis les fichiers joints, corriger la dernière cellule du notebook 03 comme indiqué plus haut.
